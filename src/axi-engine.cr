@@ -1,21 +1,16 @@
-require "kemal"
+require "raze"
+require "yaml"
+require "json"
 
-require "./axi-engine/*"
+post "/api/create" do |ctx|
+  ctx.response.content_type = "application/json"
 
-module Axi::Engine
-  get "/" do |env|
-    env.response.content_type = "application/json"
+  raw_body = ctx.request.body.as(IO).gets_to_end
+  data = YAML.parse_all(raw_body)
 
-    {data: "Hello, Jeam! 🙆‍"}.to_json
-  end
+  services = data.map {|item| item["name"].to_s}
 
-  ws "/" do |socket|
-    socket.send "Hello from Kemal!"
-
-    socket.on_message do |msg|
-      socket.send "Echo back from server #{msg}"
-    end
-  end
-
-  Kemal.run
+  {data: "Created!", services: services}.to_json
 end
+
+Raze.run
