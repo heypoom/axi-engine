@@ -8,7 +8,7 @@ post "/api/create" do |ctx|
 
   data = YAML.parse_all(body)
 
-  print "YAML: ".colorize(:blue)
+  print "YAML: ".colorize(:blue), data
 
   services = data
     .map {|item| {item["name"].to_s => item["kind"].to_s}}
